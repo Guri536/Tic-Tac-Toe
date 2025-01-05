@@ -45,13 +45,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +72,7 @@ import com.example.tic_tac_toe.ui.theme.TicTacToeTheme
 import com.example.tic_tac_toe.ui.theme.UsualState
 import com.example.tic_tac_toe.ui.theme.circleColor
 import com.example.tic_tac_toe.ui.theme.crossColor
+import kotlinx.coroutines.selects.select
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -404,6 +409,7 @@ fun Main_Body() {
 
     @Composable
     fun scoreName(player: Player) {
+        val focusRequester = remember { FocusRequester() }
         Row(
             modifier = Modifier.fillMaxHeight(1 / 2f)
                 .wrapContentWidth()
@@ -412,10 +418,13 @@ fun Main_Body() {
                 val focusMan = LocalFocusManager.current
                 var displayName by remember { mutableStateOf(player.name.value) }
                 BasicTextField(
-                    value = displayName,
+                    value = TextFieldValue(
+                        text = displayName,
+                        selection = TextRange(displayName.length)
+                    ),
                     onValueChange = { it ->
-                        if (it.length <= 10) {
-                            displayName = it
+                        if (it.text.length <= 10) {
+                            displayName = it.text
                         }
                     },
                     singleLine = true,
@@ -432,6 +441,7 @@ fun Main_Body() {
                         }
                     ),
                     modifier = Modifier.fillMaxWidth(2 / 5f)
+                        .focusRequester(focusRequester)
                 )
                 HoriSpacer(1.dp, 2 / 5f, roundness = 100, color = Secondary)
             }
@@ -440,6 +450,7 @@ fun Main_Body() {
                 contentDescription = null,
                 colorFilter = ColorFilter.tint(Secondary),
                 modifier = Modifier.fillMaxHeight(4 / 5f)
+                    .clickable { focusRequester.requestFocus() }
             )
         }
     }
