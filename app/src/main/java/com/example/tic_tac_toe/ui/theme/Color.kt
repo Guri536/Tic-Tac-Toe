@@ -16,7 +16,7 @@ val Tertiary = Color(0xFFFAFAFA)
 val Complementry = Color(0xFFE3F2FD)
 val LastSelected = Color(0xFFD4EDFF)
 val CompleteState = Color(0xFFAFFFB4)
-val UsualState = Color(0x00EEEEEE)
+val UsualState = Color(0x00BBE4E5)
 
 val crossColor = Color(0xFFD25C5C)
 val circleColor = Color(0xFF3FC2BD)

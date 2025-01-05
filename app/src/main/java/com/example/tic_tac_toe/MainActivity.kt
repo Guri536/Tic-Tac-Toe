@@ -27,14 +27,10 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -72,7 +68,6 @@ import com.example.tic_tac_toe.ui.theme.TicTacToeTheme
 import com.example.tic_tac_toe.ui.theme.UsualState
 import com.example.tic_tac_toe.ui.theme.circleColor
 import com.example.tic_tac_toe.ui.theme.crossColor
-import kotlinx.coroutines.selects.select
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,39 +188,13 @@ fun Main_Body() {
         color = Complementry
     )
 
-    var gameMatrix by remember {
-        mutableStateOf(
-            arrayOf(
-                arrayOf(
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                ),
-                arrayOf(
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                ),
-                arrayOf(
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                    Square(mutableStateOf(0)),
-                ),
-            )
-        )
-    }
+    val gameMatrix by remember { mutableStateOf(
+        Array<Array<Square>>(3){ Array<Square>(3){Square(mutableStateOf(0))} }
+    ) }
 
-    val matrix_cell_back = arrayOf(
-        arrayOf(remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) }),
-        arrayOf(remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) }),
-        arrayOf(remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) },
-            remember { mutableStateOf(UsualState) }),
-    )
+    val matrix_cell_back by remember {  mutableStateOf( Array<Array<MutableState<Color>>>(3){
+        Array<MutableState<Color>>(3){ mutableStateOf(UsualState) }
+    } )}
 
     fun check_full(): Boolean {
         for (i in gameMatrix) {
@@ -316,9 +285,10 @@ fun Main_Body() {
             modifier = Modifier
                 .fillMaxWidth((1 / (3 - Coord.second.toFloat())))
                 .fillMaxHeight()
+                .padding(5.dp)
                 .clip(RoundedCornerShape(20.dp))
                 .background(matrix_cell_back[Coord.first][Coord.second].value)
-                .padding(20.dp)
+                .padding(15.dp)
                 .clickable(enabled = cell_enabled) {
                     CellStateSet(Coord)
                 }
